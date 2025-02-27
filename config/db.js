@@ -15,6 +15,6 @@ const dbConfig2 = {
       user: "freedb_sibeljr11",
       password: "&?9J*E#eDzmY9Zj",
       database: "freedb_gestcafe",
-      port: 3306,
+      //port: 3306,
 };
 module.exports = myConn(mysql, dbConfig2, "pool"); // Para usar en Express
