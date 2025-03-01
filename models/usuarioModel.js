@@ -47,7 +47,7 @@ exports.getAll = (conn) => {
                  s.plan,
                  s.fecha_inicio,
                  s.fecha_suspension,
-                 s.estado,
+                 s.estado
              FROM usuarios AS u
              LEFT JOIN suscripciones AS s 
                  ON u.no_identificacion = s.id_usuario
