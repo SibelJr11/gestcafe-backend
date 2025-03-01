@@ -37,7 +37,22 @@ exports.verify = (conn, id) => {
 };
 
 exports.getAll = (conn) => {
-      const sql = "SELECT * FROM usuarios ";
+      const sql = `SELECT 
+                 u.no_identificacion,
+                 u.rol,
+                 u.nombres,
+                 u.apellidos,
+                 u.celular,
+                 u.correo,
+                 s.plan,
+                 s.fecha_inicio,
+                 s.fecha_suspension,
+                 s.estado,
+             FROM usuarios AS u
+             LEFT JOIN suscripciones AS s 
+                 ON u.no_identificacion = s.id_usuario
+             ORDER BY u.nombres ASC, u.apellidos ASC;
+             `;
       return new Promise((resolve, reject) => {
             conn.query(sql, (err, result) => {
                   if (err) return reject(err);
