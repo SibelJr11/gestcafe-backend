@@ -35,7 +35,7 @@ exports.updateSuscripcion = async (req, res) => {
             try {
                   const dataSuscripcion = req.body;
                   const idSuscripcion = req.params.idSuscripcion;
-                  await fincaModel.update(conn, idSuscripcion, dataSuscripcion);
+                  await suscripcionModel.update(conn, idSuscripcion, dataSuscripcion);
                   res.status(200).json({
                         message: "Datos modificados exitosamente!",
                   });
