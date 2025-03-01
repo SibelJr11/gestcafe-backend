@@ -8,7 +8,6 @@ exports.create = (conn, asignacion) => {
       });
 };
 
-
 exports.getByIdFinca = (conn, idFinca) => {
       return new Promise((resolve, reject) => {
             // Iniciar la transacción
@@ -40,27 +39,36 @@ exports.getByIdFinca = (conn, idFinca) => {
                         const idSemana = resultSemana[0].id_semana;
 
                         // SQL para buscar todas la asignaciones de una finca durante una semana
-                        const sqlAsignacion = `
-                                        SELECT 
-                                            a.id_asignacion,
-                                            a.id_empleado,
-                                            e.nombre,
-                                            a.id_semana,
-                                           CONVERT(COALESCE(SUM(j.kilos), 0), SIGNED) AS kilos,
-                                           CONVERT(COALESCE(SUM(ad.valor), 0), SIGNED) AS adelantos
-                                        FROM 
-                                            asignaciones AS a
-                                        JOIN 
-                                            empleados AS e ON a.id_empleado = e.id_empleado
-                                        LEFT JOIN 
-                                            jornales AS j ON a.id_asignacion = j.id_asignacion
-                                         LEFT JOIN 
-                                            adelantos AS ad ON a.id_asignacion = ad.id_asignacion
-                                        WHERE 
-                                            a.id_semana = ? 
-                                        AND a.estado = TRUE
-                                        GROUP BY a.id_asignacion
-                                        ORDER BY e.nombre ASC`;
+                        const sqlAsignacion = `WITH JornalSuma AS (
+                              SELECT id_asignacion, SUM(kilos) AS suma_kilos 
+                              FROM jornales 
+                              GROUP BY id_asignacion
+                          ),
+                          AdelantoSuma AS (
+                              SELECT id_asignacion, SUM(valor) AS suma_adelantos 
+                              FROM adelantos 
+                              GROUP BY id_asignacion
+                          )
+                          SELECT 
+                              a.id_asignacion,
+                              a.id_empleado,
+                              e.nombre,
+                              a.id_semana,
+                            CONVERT(COALESCE(j.suma_kilos, 0), UNSIGNED) AS kilos,
+                            CONVERT(COALESCE(ad.suma_adelantos, 0), UNSIGNED) AS adelantos
+
+                          FROM 
+                              asignaciones AS a
+                          JOIN 
+                              empleados AS e ON a.id_empleado = e.id_empleado
+                          LEFT JOIN JornalSuma j ON a.id_asignacion = j.id_asignacion
+                          LEFT JOIN AdelantoSuma ad ON a.id_asignacion = ad.id_asignacion
+                          WHERE 
+                              a.id_semana = ?
+                          AND a.estado = TRUE
+                          ORDER BY 
+                              e.nombre ASC;
+                        `;
 
                         conn.query(
                               sqlAsignacion,
