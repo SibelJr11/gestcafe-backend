@@ -115,3 +115,26 @@ exports.verifyUsuario = async (req, res) => {
             }
       });
 };
+
+//Obtengo todos los  usuarios GestCafe
+exports.getAllUsuarios = async (req, res) => {
+      req.getConnection(async (err, conn) => {
+            if (err) {
+                  return res.status(500).json({
+                        error: "Error en la conexión a la base de datos",
+                  });
+            }
+            try {
+                  const usuarios = await usuarioModel.getAll(
+                        conn
+                  );
+
+                  res.status(200).json({
+                        message: "Usuarios del GestCafé",
+                        data: usuarios,
+                  });
+            } catch (error) {
+                  res.status(500).json({ error: error.message });
+            }
+      });
+};

@@ -35,3 +35,13 @@ exports.verify = (conn, id) => {
             });
       });
 };
+
+exports.getAll = (conn) => {
+      const sql = "SELECT * FROM usuarios ";
+      return new Promise((resolve, reject) => {
+            conn.query(sql, (err, result) => {
+                  if (err) return reject(err);
+                  resolve(result);
+            });
+      });
+};

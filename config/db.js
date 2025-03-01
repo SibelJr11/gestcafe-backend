@@ -17,4 +17,4 @@ const dbConfig2 = {
       database: "sql3765149",
       port: 3306,
 };
-module.exports = myConn(mysql, dbConfig2, "pool"); // Para usar en Express
+module.exports = myConn(mysql, dbConfig, "pool"); // Para usar en Express
