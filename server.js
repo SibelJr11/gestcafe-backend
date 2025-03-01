@@ -17,33 +17,62 @@ const adelantosRoutes = require("./routes/adelantos");
 const app = express();
 const server = http.createServer(app);  // 🔹 Crear servidor HTTP
 
-// ⚡️ Configurar Socket.io
 const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173", // Cambia esto si tu frontend está en otro dominio
-    methods: ["GET", "POST"]
-  }
-});
-
-let connectedUsers = new Map();  // Guardar usuarios conectados
-
-// 📌 Evento de conexión de usuarios
-io.on("connection", (socket) => {
-  console.log(`Usuario conectado: ${socket.id}`);
-
-  // 🔹 Recibir información cuando un usuario inicia sesión
-  socket.on("userLoggedIn", (userData) => {
-    connectedUsers.set(socket.id, userData);
-    io.emit("usuariosConectados", Array.from(connectedUsers.values())); // Notificar a todos los clientes
-  });
-
-  // 🔹 Cuando el usuario se desconecta, eliminarlo
-  socket.on("disconnect", () => {
-    console.log(`Usuario desconectado: ${socket.id}`);
-    connectedUsers.delete(socket.id);
-    io.emit("usuariosConectados", Array.from(connectedUsers.values())); // Notificar cambios
-  });
-});
+      cors: {
+        origin: "http://localhost:5173",
+        methods: ["GET", "POST"]
+      }
+    });
+    
+    let connectedUsers = new Map();  // Guarda usuarios conectados { userID: Set(socketIDs) }
+    
+    io.on("connection", (socket) => {
+      console.log(`Usuario conectado: ${socket.id}`);
+    
+      // 🔹 Evento cuando un usuario inicia sesión
+      socket.on("userLoggedIn", (userData) => {
+        const { id, nombre } = userData;
+    
+        if (!connectedUsers.has(id)) {
+          connectedUsers.set(id, { id, nombre, sockets: new Set() });
+        }
+    
+        connectedUsers.get(id).sockets.add(socket.id);
+    
+        console.log("Usuarios conectados:", Array.from(connectedUsers.values()));
+    
+        // 📢 Emitir lista de usuarios únicos conectados
+        io.emit("usuariosConectados", Array.from(connectedUsers.values()).map(user => ({
+          id: user.id,
+          nombre: user.nombre
+        })));
+      });
+    
+      // 🔹 Cuando un usuario se desconecta
+      socket.on("disconnect", () => {
+        let userToRemove = null;
+    
+        for (let [userId, user] of connectedUsers) {
+          user.sockets.delete(socket.id);
+          if (user.sockets.size === 0) {
+            userToRemove = userId; // Si no quedan sockets, eliminar usuario
+          }
+        }
+    
+        if (userToRemove) {
+          connectedUsers.delete(userToRemove);
+        }
+    
+        console.log("Usuarios conectados después de la desconexión:", Array.from(connectedUsers.values()));
+    
+        // 📢 Emitir lista actualizada de usuarios conectados
+        io.emit("usuariosConectados", Array.from(connectedUsers.values()).map(user => ({
+          id: user.id,
+          nombre: user.nombre
+        })));
+      });
+    });
+    
 
 // Configurar el puerto
 app.set("port", process.env.PORT || 9000);
