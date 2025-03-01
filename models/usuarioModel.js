@@ -44,6 +44,7 @@ exports.getAll = (conn) => {
                  u.apellidos,
                  u.celular,
                  u.correo,
+                 s.id_suscripcion,
                  s.plan,
                  s.fecha_inicio,
                  s.fecha_suspension,

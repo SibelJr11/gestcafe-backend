@@ -14,6 +14,7 @@ const fincasRoutes = require("./routes/fincas");
 const ventasRoutes = require("./routes/ventas");
 const adelantosRoutes = require("./routes/adelantos");
 const suscripcionesRoutes = require("./routes/suscripciones");
+const pagos_suscripcionRoutes = require("./routes/pagos_suscripcion");
 
 const app = express();
 const server = http.createServer(app); // 🔹 Crear servidor HTTP
@@ -110,6 +111,7 @@ app.use("/api/fincas", fincasRoutes);
 app.use("/api/ventas", ventasRoutes);
 app.use("/api/adelantos", adelantosRoutes);
 app.use("/api/suscripciones", suscripcionesRoutes);
+app.use("/api/pagos-suscripcion", pagos_suscripcionRoutes);
 
 // 🚀 Iniciar el servidor con Socket.io
 server.listen(app.get("port"), () => {
