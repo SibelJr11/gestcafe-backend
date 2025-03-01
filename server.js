@@ -13,7 +13,7 @@ const pagosRoutes = require("./routes/pagos");
 const fincasRoutes = require("./routes/fincas");
 const ventasRoutes = require("./routes/ventas");
 const adelantosRoutes = require("./routes/adelantos");
-const suscripcionesRoutes = require("./routes/suscripcion");
+const suscripcionesRoutes = require("./routes/suscripciones");
 
 const app = express();
 const server = http.createServer(app); // 🔹 Crear servidor HTTP
