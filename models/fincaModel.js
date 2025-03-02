@@ -39,7 +39,7 @@ exports.getByIdPropietario = (conn, id) => {
 };
 
 exports.getByIdAdministrador = (conn, id) => {
-    const sql = `SELECT 
+      const sql = `SELECT 
                       id_finca, 
                       nombre, 
                       ubicacion, 
@@ -60,38 +60,44 @@ exports.getByIdAdministrador = (conn, id) => {
                   WHERE 
                       f.id_administrador = ?;
                   `;
-    return new Promise((resolve, reject) => {
-          conn.query(sql, [id], (err, result) => {
-                if (err) return reject(err);
-                resolve(result);
-          });
-    });
+      return new Promise((resolve, reject) => {
+            conn.query(sql, [id], (err, result) => {
+                  if (err) return reject(err);
+                  resolve(result);
+            });
+      });
 };
 
 //Obtiene el total de kilos y de pagos a trabajadores de una finca en especifica y los agrupa por mes.
 exports.getByIdAndYear = (conn, idFinca, year) => {
       const sql = `SELECT 
-              DATE_FORMAT(p.fecha, '%M') AS mes,
-               CONVERT(COALESCE(SUM(p.valor), 0), SIGNED) AS total_pagos,
-               SUM(j.kilos) AS total_kilos
-           FROM 
-               fincas f
-           JOIN 
-               semanas s ON f.id_finca = s.id_finca
-           JOIN 
-               asignaciones a ON s.id_semana = a.id_semana
-           JOIN 
-               jornales j ON a.id_asignacion = j.id_asignacion
-           JOIN 
-               pagos p ON a.id_asignacion = p.id_asignacion
-           WHERE 
-               f.id_finca = ?
-           AND 
-              YEAR(p.fecha) = ?
-           GROUP BY 
-               mes
-           ORDER BY 
-               MONTH(p.fecha);`;
+    DATE_FORMAT(p.fecha, '%M') AS mes,
+    COALESCE((
+        SELECT SUM(pagos.valor)
+        FROM pagos
+        WHERE pagos.id_asignacion = a.id_asignacion
+        AND YEAR(pagos.fecha) = ?
+    ), 0) AS total_pagos,
+    SUM(j.kilos) AS total_kilos
+FROM 
+    fincas f
+JOIN 
+    semanas s ON f.id_finca = s.id_finca
+JOIN 
+    asignaciones a ON s.id_semana = a.id_semana
+LEFT JOIN 
+    jornales j ON a.id_asignacion = j.id_asignacion
+LEFT JOIN 
+    pagos p ON a.id_asignacion = p.id_asignacion
+WHERE 
+    f.id_finca = ?
+AND 
+    YEAR(j.fecha) = ?
+GROUP BY 
+    mes
+ORDER BY 
+    MONTH(p.fecha);
+`;
       return new Promise((resolve, reject) => {
             conn.query(sql, [idFinca, year], (err, result) => {
                   if (err) return reject(err);
@@ -134,21 +140,21 @@ exports.getTodasFincasByIdAndYear = (conn, no_identificacion, year) => {
 };
 
 exports.update = (conn, idFinca, data) => {
-    const sql = "UPDATE fincas SET ? WHERE id_finca = ?";
-    return new Promise((resolve, reject) => {
-          conn.query(sql, [data, idFinca], (err, result) => {
-                if (err) return reject(err);
-                resolve(result);
-          });
-    });
+      const sql = "UPDATE fincas SET ? WHERE id_finca = ?";
+      return new Promise((resolve, reject) => {
+            conn.query(sql, [data, idFinca], (err, result) => {
+                  if (err) return reject(err);
+                  resolve(result);
+            });
+      });
 };
 
 exports.delete = (conn, idFinca) => {
-    const sql = "DELETE FROM fincas WHERE id_finca = ?";
-    return new Promise((resolve, reject) => {
-          conn.query(sql, [idFinca], (err, result) => {
-                if (err) return reject(err);
-                resolve(result);
-          });
-    });
+      const sql = "DELETE FROM fincas WHERE id_finca = ?";
+      return new Promise((resolve, reject) => {
+            conn.query(sql, [idFinca], (err, result) => {
+                  if (err) return reject(err);
+                  resolve(result);
+            });
+      });
 };
