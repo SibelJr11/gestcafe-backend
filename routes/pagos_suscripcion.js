@@ -7,5 +7,5 @@ const {
 const router = express.Router();
 
 router.post("/", createPagoSuscripcion);
-router.get("/historial", getHistorialPagosSuscripcion);
+router.get("/historial/:idSuscripcion", getHistorialPagosSuscripcion);
 module.exports = router;
