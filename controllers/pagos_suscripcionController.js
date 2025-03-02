@@ -32,7 +32,7 @@ exports.getHistorialPagosSuscripcion = async (req, res) => {
             try {
                   const historialPagosSus = await pagos_suscripcionModel.getHistorial(
                         conn,
-                        req.params.id_suscripcion,
+                        req.params.idSuscripcion,
                   );
                   if (!historialPagosSus) {
                         return res
