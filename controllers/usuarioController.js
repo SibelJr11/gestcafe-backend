@@ -62,6 +62,19 @@ exports.loginUsuario = (req, res) => {
                               .json({ error: "Contraseña incorrecta" });
                   }
 
+                  if (usuario.estado === "ESPERA") {
+                        return res.status(403).json({ 
+                          message: "Tu cuenta está en espera. Completa el pago de la suscripción para activarla." 
+                        });
+                      }
+                      
+                      if (usuario.estado === "SUSPENDIDO") {
+                        return res.status(403).json({ 
+                          message: "Tu suscripción ha vencido. Renueva tu plan para seguir accediendo." 
+                        });
+                      }
+                      
+
                   // Generar  token JWT
                   const token = jwt.sign(
                         {

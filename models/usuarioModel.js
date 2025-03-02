@@ -15,7 +15,11 @@ exports.create = (conn, usuario) => {
 };
 
 exports.login = (conn, no_identificacion) => {
-      const sql = "SELECT * FROM usuarios WHERE no_identificacion = ?";
+      const sql = `SELECT u.*, s.estado 
+                   FROM usuarios u
+                   JOIN suscripciones s ON u.no_identificacion = s.id_usuario
+                   WHERE u.no_identificacion = ?;
+                   `;
       return new Promise((resolve, reject) => {
             conn.query(sql, no_identificacion, (err, result) => {
                   if (err) return reject(err);
