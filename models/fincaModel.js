@@ -99,7 +99,7 @@ ORDER BY
     MONTH(p.fecha);
 `;
       return new Promise((resolve, reject) => {
-            conn.query(sql, [idFinca, year], (err, result) => {
+            conn.query(sql, [year, idFinca, year], (err, result) => {
                   if (err) return reject(err);
                   resolve(result);
             });
