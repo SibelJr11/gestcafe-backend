@@ -17,3 +17,5 @@ exports.update = (conn, idSuscripcion, data) => {
             });
       });
 };
+
+

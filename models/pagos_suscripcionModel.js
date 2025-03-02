@@ -7,3 +7,14 @@ exports.create = (conn, pago_suscripcion) => {
           });
     });
 };
+
+exports.getHistorial = (conn, idSuscripcion) => {
+      const sql = `SELECT * FROM pagos_suscripcion WHERE id_suscripcion = ?`;
+
+      return new Promise((resolve, reject) => {
+            conn.query(sql, [idSuscripcion], (err, results) => {
+                  if (err) reject(err);
+                  resolve(results);
+            });
+      });
+};

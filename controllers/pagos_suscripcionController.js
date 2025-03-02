@@ -20,3 +20,28 @@ exports.createPagoSuscripcion = async (req, res) => {
             }
       });
 };
+
+//Busca el historial de pagos de una suscripcion
+exports.getHistorialPagosSuscripcion = async (req, res) => {
+      req.getConnection(async (err, conn) => {
+            if (err) {
+                  return res.status(500).json({
+                        error: "Error en la conexión a la base de datos",
+                  });
+            }
+            try {
+                  const historialPagosSus = await pagos_suscripcionModel.getHistorial(
+                        conn,
+                        req.params.id_suscripcion,
+                  );
+                  if (!historialPagosSus) {
+                        return res
+                              .status(404)
+                              .json({ message: "No se encontraron pagos para esta suscripción " });
+                  }
+                  res.status(200).json({ data: historialPagosSus });
+            } catch (error) {
+                  res.status(500).json({ error: error.message });
+            }
+      });
+};
