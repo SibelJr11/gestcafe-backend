@@ -6,15 +6,16 @@ const dbConfig = {
       host: "127.0.0.1",
       user: "root",
       password: "",
-      database: "db_gestcafe",
+      database: "db_backap",
       port: 3306,
 };
 
+
 const dbConfig2 = {
       host: "sql3.freesqldatabase.com",
-      user: "sql3765149",
-      password: "bmcyBzDrpi",
-      database: "sql3765149",
+      user: "sql3766797",
+      password: "RA2QX6tl6i",
+      database: "sql3766797",
       port: 3306,
 };
-module.exports = myConn(mysql, dbConfig2, "pool"); // Para usar en Express
+module.exports = myConn(mysql, dbConfig, "pool"); // Para usar en Express

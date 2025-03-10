@@ -63,17 +63,16 @@ exports.loginUsuario = (req, res) => {
                   }
 
                   if (usuario.estado === "ESPERA") {
-                        return res.status(403).json({ 
-                          message: "Tu cuenta está en espera. Completa el pago de la suscripción para activarla." 
+                        return res.status(403).json({
+                              message: "Tu cuenta está en espera. Completa el pago de la suscripción para activarla.",
                         });
-                      }
-                      
-                      if (usuario.estado === "SUSPENDIDO") {
-                        return res.status(403).json({ 
-                          message: "Tu suscripción ha vencido. Renueva tu plan para seguir accediendo." 
+                  }
+
+                  if (usuario.estado === "SUSPENDIDO") {
+                        return res.status(403).json({
+                              message: "Tu suscripción ha vencido. Renueva tu plan para seguir accediendo.",
                         });
-                      }
-                      
+                  }
 
                   // Generar  token JWT
                   const token = jwt.sign(
@@ -138,13 +137,42 @@ exports.getAllUsuarios = async (req, res) => {
                   });
             }
             try {
-                  const usuarios = await usuarioModel.getAll(
-                        conn
-                  );
+                  const usuarios = await usuarioModel.getAll(conn);
 
                   res.status(200).json({
-                        message: "Usuarios del GestCafé",
+                        message: "Usuarios de GestCafé",
                         data: usuarios,
+                  });
+            } catch (error) {
+                  res.status(500).json({ error: error.message });
+            }
+      });
+};
+
+// Cambiar la contraseña del usuario
+exports.resetPasswordUsuario = async (req, res) => {
+      req.getConnection(async (err, conn) => {
+            if (err) {
+                  return res.status(500).json({
+                        error: "Error en la conexión a la base de datos",
+                  });
+            }
+            try {
+                  const {password} = req.body;
+                  const idUsuario = req.params.idUsuario;
+
+                  // Encriptar la contraseña antes de modificarla
+                  const saltRounds = 10; // Número de rondas para generar el salt
+                  const hashedPassword  = await bcrypt.hash(password,saltRounds );
+
+                  const resultado = await usuarioModel.resetPassword(
+                        conn,
+                        hashedPassword,
+                        idUsuario
+                  );
+                  res.status(201).json({
+                        message: "Contraseña actualizada!",
+                        data: resultado,
                   });
             } catch (error) {
                   res.status(500).json({ error: error.message });

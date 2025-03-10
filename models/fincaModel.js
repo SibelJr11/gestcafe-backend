@@ -71,7 +71,20 @@ exports.getByIdAdministrador = (conn, id) => {
 //Obtiene el total de kilos y de pagos a trabajadores de una finca en especifica y los agrupa por mes.
 exports.getByIdAndYear = (conn, idFinca, year) => {
       const sql = `SELECT 
-             DATE_FORMAT(p.fecha, '%M') AS mes,
+              CASE 
+                 WHEN MONTH(p.fecha) = 1 THEN 'Enero'
+                 WHEN MONTH(p.fecha) = 2 THEN 'Febrero'
+                 WHEN MONTH(p.fecha) = 3 THEN 'Marzo'
+                 WHEN MONTH(p.fecha) = 4 THEN 'Abril'
+                 WHEN MONTH(p.fecha) = 5 THEN 'Mayo'
+                 WHEN MONTH(p.fecha) = 6 THEN 'Junio'
+                 WHEN MONTH(p.fecha) = 7 THEN 'Julio'
+                 WHEN MONTH(p.fecha) = 8 THEN 'Agosto'
+                 WHEN MONTH(p.fecha) = 9 THEN 'Septiembre'
+                 WHEN MONTH(p.fecha) = 10 THEN 'Octubre'
+                 WHEN MONTH(p.fecha) = 11 THEN 'Noviembre'
+                 WHEN MONTH(p.fecha) = 12 THEN 'Diciembre'
+             END AS mes,
              COALESCE((
                  SELECT SUM(pagos.valor)
                  FROM pagos

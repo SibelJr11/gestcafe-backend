@@ -1,3 +1,20 @@
+const caseMeses = `
+                CASE 
+                    WHEN MONTH(fecha) = 1 THEN 'ENERO'
+                    WHEN MONTH(fecha) = 2 THEN 'FEBRERO'
+                    WHEN MONTH(fecha) = 3 THEN 'MARZO'
+                    WHEN MONTH(fecha) = 4 THEN 'ABRIL'
+                    WHEN MONTH(fecha) = 5 THEN 'MAYO'
+                    WHEN MONTH(fecha) = 6 THEN 'JUNIO'
+                    WHEN MONTH(fecha) = 7 THEN 'JULIO'
+                    WHEN MONTH(fecha) = 8 THEN 'AGOSTO'
+                    WHEN MONTH(fecha) = 9 THEN 'SEPTIEMBRE'
+                    WHEN MONTH(fecha) = 10 THEN 'OCTUBRE'
+                    WHEN MONTH(fecha) = 11 THEN 'NOVIEMBRE'
+                    WHEN MONTH(fecha) = 12 THEN 'DICIEMBRE'
+                END 
+                `;
+
 exports.create = (conn, finca) => {
       const sql = "INSERT INTO ventas SET ?";
       return new Promise((resolve, reject) => {
@@ -24,8 +41,7 @@ exports.getCafeSecoByIdFinca = (conn, idFinca, year) => {
             const query = `
                        SELECT 
                            MONTH(fecha) AS num_mes, 
-                           CONCAT(UCASE(LEFT(DATE_FORMAT(fecha, '%M'), 1)), 
-                           SUBSTRING(DATE_FORMAT(fecha, '%M'), 2)) AS mes,
+                           ${caseMeses} AS mes,
                            tipo_cafe, 
                            SUM(cantidad) AS total_cantidad, 
                            SUM(valor) AS total_valor
@@ -52,8 +68,7 @@ exports.getCafeVerdeByIdFinca = (conn, idFinca, year) => {
             const query = `
                        SELECT 
                            MONTH(fecha) AS num_mes, 
-                           CONCAT(UCASE(LEFT(DATE_FORMAT(fecha, '%M'), 1)), 
-                           SUBSTRING(DATE_FORMAT(fecha, '%M'), 2)) AS mes,
+                           ${caseMeses} AS mes,
                            tipo_cafe, 
                            SUM(cantidad) AS total_cantidad, 
                            SUM(valor) AS total_valor
@@ -80,8 +95,7 @@ exports.getPasillaByIdFinca = (conn, idFinca, year) => {
             const query = `
                        SELECT 
                            MONTH(fecha) AS num_mes, 
-                           CONCAT(UCASE(LEFT(DATE_FORMAT(fecha, '%M'), 1)), 
-                           SUBSTRING(DATE_FORMAT(fecha, '%M'), 2)) AS mes,
+                           ${caseMeses} AS mes,
                            tipo_cafe, 
                            SUM(cantidad) AS total_cantidad, 
                            SUM(valor) AS total_valor

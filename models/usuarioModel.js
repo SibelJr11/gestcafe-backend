@@ -65,3 +65,13 @@ exports.getAll = (conn) => {
             });
       });
 };
+
+exports.resetPassword = (conn, password, idUsuario) => {
+      const sql = "UPDATE usuarios SET password = ? WHERE no_identificacion = ?";
+      return new Promise((resolve, reject) => {
+            conn.query(sql, [password, idUsuario], (err, result) => {
+                  if (err) return reject(err);
+                  resolve(result);
+            });
+      });
+};
