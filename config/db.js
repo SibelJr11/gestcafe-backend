@@ -10,7 +10,6 @@ const dbConfig = {
       port: 3306,
 };
 
-
 const dbConfig2 = {
       host: "sql3.freesqldatabase.com",
       user: "sql3766797",
@@ -18,4 +17,4 @@ const dbConfig2 = {
       database: "sql3766797",
       port: 3306,
 };
-module.exports = myConn(mysql, dbConfig, "pool"); // Para usar en Express
+module.exports = myConn(mysql, dbConfig2, "pool"); // Para usar en Express
